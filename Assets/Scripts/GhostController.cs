@@ -11,6 +11,16 @@ public class GhostController : MonoBehaviour
     // Scene controller
     public SceneController sceneController;
 
+    // Empty objects to point where the corridors are
+    public GameObject refWest;
+    public GameObject refEst;
+    public GameObject refNorth;
+    public GameObject refSouth;
+    public int numberOfCorridorsPerSide;
+    public float error;
+    private float corridorSize;
+    public bool debugCloseIntersections;
+
     // These variables will hold what we find in each direction (p = player, w = wall)
     private char nObj;
     private char eObj;
@@ -25,12 +35,19 @@ public class GhostController : MonoBehaviour
 
     // Current moving direction
     private Vector3 movingDir = new Vector3(0, 0, -1);
+    // Previous moving direction
+    private Vector3 prevMovingDir = new Vector3(0, 0, -1);
 
     // Movement vectors
     private Vector3 north = new Vector3(0, 0, 1);
     private Vector3 est = new Vector3(1, 0, 0);
     private Vector3 south = new Vector3(0, 0, -1);
     private Vector3 west = new Vector3(-1, 0, 0);
+
+    private void Start()
+    {
+        corridorSize = (refEst.transform.position.x - refWest.transform.position.x) / numberOfCorridorsPerSide;
+    }
 
     // Update is called once per frame
     void FixedUpdate()
@@ -217,8 +234,21 @@ public class GhostController : MonoBehaviour
             }
         }
 
+        // If it's on the centre of corridors can change direction
+        if (movingDir != prevMovingDir && isClose(transform.position))
+        {
+            Vector3 tmp = prevMovingDir;
+            prevMovingDir = movingDir;
+            movingDir = tmp;
+        } else
+        {
+            movingDir = prevMovingDir;
+        }
+
         // Do the actual movement
         transform.position += movingDir * speed * Time.deltaTime;
+        transform.LookAt(- movingDir * 10000);
+        debugCloseIntersections = isClose(transform.position);
     }
 
     private char getMovingDirInChar()
@@ -229,6 +259,14 @@ public class GhostController : MonoBehaviour
         if (movingDir == west) return 'w';
         Debug.Log("Error in getMovingDirInChar() - probably due to vector precision");
         return 'f';
+    }
+
+    // Function to determin whether the ghost position is close to corridors centre
+    private bool isClose (Vector3 v)
+    {
+        if (Mathf.Abs((((int)((v.x - refWest.transform.position.x) / corridorSize)) * corridorSize) - (v.x - refWest.transform.position.x)) < error &&
+            Mathf.Abs((((int)((v.z - refSouth.transform.position.z) / corridorSize)) * corridorSize) - (v.z - refSouth.transform.position.z)) < error) return true;
+        return false;
     }
 
 }
