@@ -295,8 +295,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ghostRef: {fileID: 1794328787}
-  speedMin: 0.9
-  speedMax: 1.1
+  speedMin: 1.3
+  speedMax: 1.5
 --- !u!111 &705846728
 Animation:
   m_ObjectHideFlags: 0
@@ -672,7 +672,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 270d0ed09a58d45efae9d89021bbf779, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1
+  speed: 1.4
   distanceToTurn: 0.8
   sceneController: {fileID: 1876049463}
   refWest: {fileID: 1144953191}
